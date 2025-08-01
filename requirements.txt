@@ -1,0 +1,9 @@
+selenium==4.15.2
+requests==2.31.0
+numpy==1.26.4
+opencv-python==4.8.1.78
+Pillow==10.1.0
+torch==2.1.1
+torchvision==0.16.1
+transformers==4.35.2
+openai-whisper==20231117 

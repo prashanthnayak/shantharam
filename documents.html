@@ -91,9 +91,10 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: white;
+            background: linear-gradient(135deg, #e8f4fd 0%, #f8f9fa 100%);
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
         }
 
         .header h1 {
@@ -174,27 +175,7 @@
             font-size: 14px;
         }
 
-        /* Document Categories */
-        .categories {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
 
-        .category-btn {
-            padding: 8px 16px;
-            border: 1px solid #ecf0f1;
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .category-btn.active {
-            background: #3498db;
-            color: white;
-        }
 
         /* Documents Grid */
         .documents-grid {
@@ -298,18 +279,89 @@
             box-shadow: 0 2px 6px rgba(243, 156, 18, 0.2);
         }
 
+        .case-badge {
+            display: inline-block;
+            background: #e8f4fd;
+            color: #3498db;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+            text-align: center;
+            width: 100%;
+        }
+
         /* Upload Area */
         .upload-area {
             background: white;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .upload-area.show {
+            display: block;
+        }
+
+        .upload-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .upload-header h3 {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .upload-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .upload-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .upload-zone {
             border: 2px dashed #ecf0f1;
             border-radius: 8px;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
             margin-bottom: 20px;
             transition: border-color 0.3s;
         }
 
-        .upload-area:hover {
+        .upload-zone:hover {
             border-color: #3498db;
         }
 
@@ -332,6 +384,12 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
+        }
+
+        .upload-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
         }
     </style>
 </head>
@@ -386,163 +444,205 @@
                 </div>
             </div>
 
-            <!-- Search and Filters -->
+            <!-- Search -->
             <div class="search-filters">
                 <div class="search-row">
-                    <input type="text" class="search-input" placeholder="Search documents by name, case, or client...">
-                    <select class="filter-select">
-                        <option>All Types</option>
-                        <option>PDF</option>
-                        <option>Word</option>
-                        <option>Images</option>
-                    </select>
-                    <select class="filter-select">
-                        <option>All Cases</option>
-                        <option>Smith vs. Johnson</option>
-                        <option>Davis Contract</option>
-                        <option>Brown Estate</option>
-                    </select>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search documents by name, case, or client...">
                 </div>
             </div>
 
-            <!-- Categories -->
-            <div class="categories">
-                <button class="category-btn active">All Documents</button>
-                <button class="category-btn">Case Files</button>
-                <button class="category-btn">Contracts</button>
-                <button class="category-btn">Court Orders</button>
-                <button class="category-btn">Evidence</button>
-                <button class="category-btn">Correspondence</button>
-            </div>
+
 
             <!-- Upload Area -->
             <div class="upload-area">
-                <div class="upload-icon">📁</div>
-                <div class="upload-text">Drag and drop files here or click to browse</div>
-                <button class="upload-btn">Choose Files</button>
+                <div class="upload-header">
+                    <h3>Upload Document</h3>
+                    <p>Select a case and upload related documents</p>
+                </div>
+                <div class="upload-form">
+                    <div class="form-group">
+                        <label for="caseSelect">Select Case:</label>
+                        <select id="caseSelect" class="form-select">
+                            <option value="">Choose a case...</option>
+                            <option value="Smith vs. Johnson">Smith vs. Johnson (Civil)</option>
+                            <option value="State vs. Williams">State vs. Williams (Criminal)</option>
+                            <option value="Davis Contract Dispute">Davis Contract Dispute (Commercial)</option>
+                            <option value="Brown Estate">Brown Estate (Probate)</option>
+                            <option value="Miller Divorce">Miller Divorce (Family)</option>
+                            <option value="Johnson Traffic Violation">Johnson Traffic Violation (Traffic)</option>
+                            <option value="Wilson Employment Case">Wilson Employment Case (Employment)</option>
+                            <option value="Garcia Immigration">Garcia Immigration (Immigration)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="documentType">Document Type:</label>
+                        <select id="documentType" class="form-select">
+                            <option value="">Select type...</option>
+                            <option value="Complaint">Complaint</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Court Order">Court Order</option>
+                            <option value="Evidence">Evidence</option>
+                            <option value="Correspondence">Correspondence</option>
+                            <option value="Settlement">Settlement</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="upload-zone">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Drag and drop files here or click to browse</div>
+                        <button class="upload-btn">Choose Files</button>
+                    </div>
+                    <div class="upload-actions">
+                        <button class="btn btn-secondary" id="cancelUpload">Cancel</button>
+                        <button class="btn btn-primary" id="uploadDocument">Upload Document</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Documents Grid -->
             <div class="documents-grid">
-                <!-- Document Card 1 -->
-                <div class="document-card">
-                    <div class="document-icon icon-pdf">📄</div>
-                    <div class="document-info">
-                        <h3>Smith vs. Johnson - Complaint</h3>
-                        <p>Civil case complaint filed on January 15, 2024</p>
-                    </div>
-                    <div class="document-meta">
-                        <span>PDF • 2.3 MB</span>
-                        <span>Jan 15, 2024</span>
-                    </div>
-                    <div class="document-actions">
-                        <button class="action-btn action-btn-view">View</button>
-                        <button class="action-btn action-btn-download">Download</button>
-                        <button class="action-btn action-btn-share">Share</button>
-                    </div>
-                </div>
-
-                <!-- Document Card 2 -->
-                <div class="document-card">
-                    <div class="document-icon icon-doc">📝</div>
-                    <div class="document-info">
-                        <h3>Davis Contract Agreement</h3>
-                        <p>Commercial contract for Davis Corporation</p>
-                    </div>
-                    <div class="document-meta">
-                        <span>DOCX • 1.8 MB</span>
-                        <span>Jan 20, 2024</span>
-                    </div>
-                    <div class="document-actions">
-                        <button class="action-btn action-btn-view">View</button>
-                        <button class="action-btn action-btn-download">Download</button>
-                        <button class="action-btn action-btn-share">Share</button>
-                    </div>
-                </div>
-
-                <!-- Document Card 3 -->
-                <div class="document-card">
-                    <div class="document-icon icon-img">🖼️</div>
-                    <div class="document-info">
-                        <h3>Evidence Photos - Williams Case</h3>
-                        <p>Photographic evidence for criminal case</p>
-                    </div>
-                    <div class="document-meta">
-                        <span>JPG • 5.2 MB</span>
-                        <span>Jan 18, 2024</span>
-                    </div>
-                    <div class="document-actions">
-                        <button class="action-btn action-btn-view">View</button>
-                        <button class="action-btn action-btn-download">Download</button>
-                        <button class="action-btn action-btn-share">Share</button>
-                    </div>
-                </div>
-
-                <!-- Document Card 4 -->
-                <div class="document-card">
-                    <div class="document-icon icon-pdf">📄</div>
-                    <div class="document-info">
-                        <h3>Brown Estate - Final Settlement</h3>
-                        <p>Probate case final settlement document</p>
-                    </div>
-                    <div class="document-meta">
-                        <span>PDF • 3.1 MB</span>
-                        <span>Jan 12, 2024</span>
-                    </div>
-                    <div class="document-actions">
-                        <button class="action-btn action-btn-view">View</button>
-                        <button class="action-btn action-btn-download">Download</button>
-                        <button class="action-btn action-btn-share">Share</button>
-                    </div>
-                </div>
-
-                <!-- Document Card 5 -->
-                <div class="document-card">
-                    <div class="document-icon icon-doc">📝</div>
-                    <div class="document-info">
-                        <h3>Court Order - Miller Divorce</h3>
-                        <p>Family court order for divorce proceedings</p>
-                    </div>
-                    <div class="document-meta">
-                        <span>DOCX • 1.5 MB</span>
-                        <span>Jan 25, 2024</span>
-                    </div>
-                    <div class="document-actions">
-                        <button class="action-btn action-btn-view">View</button>
-                        <button class="action-btn action-btn-download">Download</button>
-                        <button class="action-btn action-btn-share">Share</button>
-                    </div>
-                </div>
-
-                <!-- Document Card 6 -->
-                <div class="document-card">
-                    <div class="document-icon icon-pdf">📄</div>
-                    <div class="document-info">
-                        <h3>Legal Correspondence - Johnson</h3>
-                        <p>Official correspondence with client Johnson</p>
-                    </div>
-                    <div class="document-meta">
-                        <span>PDF • 0.8 MB</span>
-                        <span>Jan 22, 2024</span>
-                    </div>
-                    <div class="document-actions">
-                        <button class="action-btn action-btn-view">View</button>
-                        <button class="action-btn action-btn-download">Download</button>
-                        <button class="action-btn action-btn-share">Share</button>
-                    </div>
-                </div>
+                <!-- Documents will be populated by JavaScript -->
             </div>
         </div>
     </div>
 
     <script>
-        // Category button functionality
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
+        // Sample document data
+        const allDocuments = [
+            {
+                name: 'Smith vs. Johnson - Complaint',
+                description: 'Civil case complaint filed on January 15, 2024',
+                case: 'Smith vs. Johnson (Civil)',
+                type: 'PDF',
+                size: '2.3 MB',
+                date: 'Jan 15, 2024',
+                icon: '📄',
+                iconClass: 'icon-pdf'
+            },
+            {
+                name: 'Davis Contract Agreement',
+                description: 'Commercial contract for Davis Corporation',
+                case: 'Davis Contract Dispute (Commercial)',
+                type: 'DOCX',
+                size: '1.8 MB',
+                date: 'Jan 20, 2024',
+                icon: '📝',
+                iconClass: 'icon-doc'
+            },
+            {
+                name: 'Evidence Photos - Williams Case',
+                description: 'Photographic evidence for criminal case',
+                case: 'State vs. Williams (Criminal)',
+                type: 'JPG',
+                size: '5.2 MB',
+                date: 'Jan 18, 2024',
+                icon: '🖼️',
+                iconClass: 'icon-img'
+            },
+            {
+                name: 'Brown Estate - Final Settlement',
+                description: 'Probate case final settlement document',
+                case: 'Brown Estate (Probate)',
+                type: 'PDF',
+                size: '3.1 MB',
+                date: 'Jan 12, 2024',
+                icon: '📄',
+                iconClass: 'icon-pdf'
+            },
+            {
+                name: 'Court Order - Miller Divorce',
+                description: 'Family court order for divorce proceedings',
+                case: 'Miller Divorce (Family)',
+                type: 'DOCX',
+                size: '1.5 MB',
+                date: 'Jan 25, 2024',
+                icon: '📝',
+                iconClass: 'icon-doc'
+            },
+            {
+                name: 'Legal Correspondence - Johnson',
+                description: 'Official correspondence with client Johnson',
+                case: 'Johnson Traffic Violation (Traffic)',
+                type: 'PDF',
+                size: '0.8 MB',
+                date: 'Jan 22, 2024',
+                icon: '📄',
+                iconClass: 'icon-pdf'
+            }
+        ];
+
+        let currentDocuments = [...allDocuments];
+
+        // Search functionality
+        function searchDocuments() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            currentDocuments = allDocuments.filter(doc => {
+                return doc.name.toLowerCase().includes(searchTerm) ||
+                       doc.description.toLowerCase().includes(searchTerm) ||
+                       doc.case.toLowerCase().includes(searchTerm);
             });
-        });
+
+            displayDocuments();
+        }
+
+        // Display documents
+        function displayDocuments() {
+            const documentsGrid = document.querySelector('.documents-grid');
+            documentsGrid.innerHTML = '';
+
+            currentDocuments.forEach(doc => {
+                const documentCard = document.createElement('div');
+                documentCard.className = 'document-card';
+                documentCard.innerHTML = `
+                    <div class="document-icon ${doc.iconClass}">${doc.icon}</div>
+                    <div class="document-info">
+                        <h3>${doc.name}</h3>
+                        <p>${doc.description}</p>
+                        <div class="case-badge">${doc.case}</div>
+                    </div>
+                    <div class="document-meta">
+                        <span>${doc.type} • ${doc.size}</span>
+                        <span>${doc.date}</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="action-btn action-btn-view">View</button>
+                        <button class="action-btn action-btn-download">Download</button>
+                        <button class="action-btn action-btn-share">Share</button>
+                    </div>
+                `;
+                documentsGrid.appendChild(documentCard);
+            });
+
+            // Reattach event listeners
+            attachDocumentEventListeners();
+        }
+
+        // Attach event listeners to document actions
+        function attachDocumentEventListeners() {
+            document.querySelectorAll('.action-btn-view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const docName = this.closest('.document-card').querySelector('h3').textContent;
+                    alert(`Viewing document: ${docName}`);
+                });
+            });
+
+            document.querySelectorAll('.action-btn-download').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const docName = this.closest('.document-card').querySelector('h3').textContent;
+                    alert(`Downloading document: ${docName}`);
+                });
+            });
+
+            document.querySelectorAll('.action-btn-share').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const docName = this.closest('.document-card').querySelector('h3').textContent;
+                    alert(`Sharing document: ${docName}`);
+                });
+            });
+        }
+
+
 
         // Document action buttons
         document.querySelectorAll('.action-btn-view').forEach(btn => {
@@ -568,12 +668,67 @@
 
         // Upload functionality
         document.querySelector('.upload-btn').addEventListener('click', function() {
-            alert('Opening file browser...');
+            // Create file input and trigger file selection
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.multiple = true;
+            fileInput.accept = '.pdf,.doc,.docx,.jpg,.jpeg,.png,.txt';
+            fileInput.click();
+            
+            fileInput.addEventListener('change', function() {
+                const files = Array.from(this.files);
+                if (files.length > 0) {
+                    alert(`Selected ${files.length} file(s): ${files.map(f => f.name).join(', ')}`);
+                }
+            });
         });
 
-        document.querySelector('.btn-primary').addEventListener('click', function() {
-            alert('Opening document upload form...');
+        // Upload document button
+        document.querySelector('#uploadDocument').addEventListener('click', function() {
+            const selectedCase = document.querySelector('#caseSelect').value;
+            const documentType = document.querySelector('#documentType').value;
+            
+            if (!selectedCase) {
+                alert('Please select a case first.');
+                return;
+            }
+            
+            if (!documentType) {
+                alert('Please select a document type.');
+                return;
+            }
+            
+            alert(`Document uploaded successfully!\nCase: ${selectedCase}\nType: ${documentType}`);
+            
+            // Reset form and hide upload area
+            document.querySelector('#caseSelect').value = '';
+            document.querySelector('#documentType').value = '';
+            document.querySelector('.upload-area').classList.remove('show');
         });
+
+        // Cancel upload button
+        document.querySelector('#cancelUpload').addEventListener('click', function() {
+            document.querySelector('#caseSelect').value = '';
+            document.querySelector('#documentType').value = '';
+            document.querySelector('.upload-area').classList.remove('show');
+        });
+
+        // Header upload button
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            const uploadArea = document.querySelector('.upload-area');
+            uploadArea.classList.toggle('show');
+            
+            if (uploadArea.classList.contains('show')) {
+                // Scroll to upload area when showing
+                uploadArea.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', searchDocuments);
+
+        // Initialize documents display
+        displayDocuments();
     </script>
 </body>
 </html> 

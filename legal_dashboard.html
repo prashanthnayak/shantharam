@@ -89,9 +89,10 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: white;
+            background: linear-gradient(135deg, #e8f4fd 0%, #f8f9fa 100%);
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
         }
 
         .header h1 {
@@ -314,23 +315,7 @@
             border-radius: 3px;
         }
 
-        .hearing-status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
 
-        .hearing-status.urgent {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .hearing-status.normal {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
 
         /* Recent Activity */
         .activity-item {
@@ -480,7 +465,6 @@
                                 <p>Court Room 3A • 10:00 AM</p>
                                 <span class="hearing-type">Civil Hearing</span>
                             </div>
-                            <div class="hearing-status urgent">Urgent</div>
                         </div>
                         <div class="hearing-item">
                             <div class="hearing-date">
@@ -492,7 +476,6 @@
                                 <p>Court Room 2B • 2:30 PM</p>
                                 <span class="hearing-type">Commercial</span>
                             </div>
-                            <div class="hearing-status normal">Normal</div>
                         </div>
                         <div class="hearing-item">
                             <div class="hearing-date">
@@ -504,7 +487,6 @@
                                 <p>Judge Chambers • 11:00 AM</p>
                                 <span class="hearing-type">Probate</span>
                             </div>
-                            <div class="hearing-status normal">Normal</div>
                         </div>
                         <div class="hearing-item">
                             <div class="hearing-date">
@@ -516,7 +498,6 @@
                                 <p>Court Room 1A • 9:00 AM</p>
                                 <span class="hearing-type">Criminal</span>
                             </div>
-                            <div class="hearing-status urgent">Urgent</div>
                         </div>
                     </div>
                 </div>
@@ -598,57 +579,49 @@
                     time: '9:00 AM',
                     case: 'State vs. Williams',
                     court: 'Court Room 1A',
-                    type: 'Criminal',
-                    status: 'Urgent'
+                    type: 'Criminal'
                 },
                 {
                     time: '10:00 AM',
                     case: 'Smith vs. Johnson',
                     court: 'Court Room 3A',
-                    type: 'Civil',
-                    status: 'Urgent'
+                    type: 'Civil'
                 },
                 {
                     time: '11:00 AM',
                     case: 'Brown Estate Settlement',
                     court: 'Judge Chambers',
-                    type: 'Probate',
-                    status: 'Normal'
+                    type: 'Probate'
                 },
                 {
                     time: '2:00 PM',
                     case: 'Davis Contract Dispute',
                     court: 'Court Room 2B',
-                    type: 'Commercial',
-                    status: 'Normal'
+                    type: 'Commercial'
                 },
                 {
                     time: '2:30 PM',
                     case: 'Miller Divorce',
                     court: 'Family Court',
-                    type: 'Family',
-                    status: 'Normal'
+                    type: 'Family'
                 },
                 {
                     time: '3:00 PM',
                     case: 'Johnson Traffic Violation',
                     court: 'Traffic Court',
-                    type: 'Traffic',
-                    status: 'Normal'
+                    type: 'Traffic'
                 },
                 {
                     time: '4:00 PM',
                     case: 'Wilson Employment Case',
                     court: 'Court Room 4A',
-                    type: 'Employment',
-                    status: 'Normal'
+                    type: 'Employment'
                 },
                 {
                     time: '5:00 PM',
                     case: 'Document Filing Deadline',
                     court: 'N/A',
-                    type: 'Deadline',
-                    status: 'Urgent'
+                    type: 'Deadline'
                 }
             ];
 
@@ -659,15 +632,13 @@
             `;
 
             hearings.forEach(hearing => {
-                const statusColor = hearing.status === 'Urgent' ? '#e74c3c' : '#3498db';
                 hearingsHtml += `
-                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid ${statusColor}; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <div style="font-weight: 600; color: #2c3e50; margin-bottom: 5px;">${hearing.time} - ${hearing.case}</div>
                                 <div style="font-size: 14px; color: #7f8c8d;">${hearing.court} • ${hearing.type}</div>
                             </div>
-                            <span style="background: ${statusColor}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">${hearing.status}</span>
                         </div>
                     </div>
                 `;

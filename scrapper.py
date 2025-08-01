@@ -12,6 +12,8 @@ import os
 from datetime import datetime
 import sys
 import torchvision
+# import whisper
+# import torch
 
 def create_chrome_driver(headless=True):
     chrome_options = Options()
@@ -36,7 +38,7 @@ def create_chrome_driver(headless=True):
 
 # Function to save CAPTCHA image
 def save_captcha_image(driver, save_directory=os.path.expanduser("~/Desktop/captcha_images")):
-    wait = WebDriverWait(driver, 30)
+    wait = WebDriverWait(driver, 1)
     try:
         # Create directory if it doesn't exist
         if not os.path.exists(save_directory):
@@ -55,38 +57,38 @@ def save_captcha_image(driver, save_directory=os.path.expanduser("~/Desktop/capt
 
         print(f"CAPTCHA image saved as: {filepath}")
         
-        # Also save CAPTCHA audio
-        try:
-            # Method 1: Try to download the audio file directly
-            audio_element = driver.find_element(By.ID, 'captcha_image_audio')
-            audio_source = audio_element.find_element(By.TAG_NAME, 'source')
-            audio_src = audio_source.get_attribute('src')
+        # # Also save CAPTCHA audio
+        # try:
+        #     # Method 1: Try to download the audio file directly
+        #     audio_element = driver.find_element(By.ID, 'captcha_image_audio')
+        #     audio_source = audio_element.find_element(By.TAG_NAME, 'source')
+        #     audio_src = audio_source.get_attribute('src')
             
-            # Convert relative URL to absolute URL
-            if audio_src.startswith('/'):
-                audio_src = "https://services.ecourts.gov.in" + audio_src
+        #     # Convert relative URL to absolute URL
+        #     if audio_src.startswith('/'):
+        #         audio_src = "https://services.ecourts.gov.in" + audio_src
             
-            print(f"Attempting to download audio from: {audio_src}")
+        #     print(f"Attempting to download audio from: {audio_src}")
             
-            # Download audio file
-            audio_response = requests.get(audio_src)
+        #     # Download audio file
+        #     audio_response = requests.get(audio_src)
             
-            if audio_response.status_code == 200 and len(audio_response.content) > 0:
-                audio_filename = f"captcha_{timestamp}.wav"
-                audio_filepath = os.path.join(save_directory, audio_filename)
+        #     if audio_response.status_code == 200 and len(audio_response.content) > 0:
+        #         audio_filename = f"captcha_{timestamp}.wav"
+        #         audio_filepath = os.path.join(save_directory, audio_filename)
                 
-                with open(audio_filepath, 'wb') as f:
-                    f.write(audio_response.content)
+        #         with open(audio_filepath, 'wb') as f:
+        #             f.write(audio_response.content)
                 
-                print(f"CAPTCHA audio saved as: {audio_filepath}")
-                print(f"Audio file size: {len(audio_response.content)} bytes")
-            else:
-                print(f"Audio download failed. Status: {audio_response.status_code}")
-                print("Audio might be a stream or require session authentication")
+        #         print(f"CAPTCHA audio saved as: {audio_filepath}")
+        #         print(f"Audio file size: {len(audio_response.content)} bytes")
+        #     else:
+        #         print(f"Audio download failed. Status: {audio_response.status_code}")
+        #         print("Audio might be a stream or require session authentication")
                 
-        except Exception as e:
-            print(f"Could not save CAPTCHA audio: {e}")
-            print("Audio capture failed - this is normal if audio is streamed dynamically")
+        # except Exception as e:
+        #     print(f"Could not save CAPTCHA audio: {e}")
+        #     print("Audio capture failed - this is normal if audio is streamed dynamically")
         
         return filepath
 
@@ -97,44 +99,164 @@ def save_captcha_image(driver, save_directory=os.path.expanduser("~/Desktop/capt
         print(f"Failed to save CAPTCHA image: {e}")
         return None
 
+# # Function to transcribe audio using Whisper
+# def transcribe_audio(audio_file_path, model_name="base"):
+#     """
+#     Transcribe audio file using OpenAI's Whisper model
+#     
+#     Args:
+#         audio_file_path (str): Path to the audio file
+#         model_name (str): Whisper model size ('tiny', 'base', 'small', 'medium', 'large')
+#     
+#     Returns:
+#         str: Transcribed text
+#     """
+#     try:
+#         print(f"Loading Whisper model: {model_name}")
+#         model = whisper.load_model(model_name)
+#         
+#         print(f"Transcribing audio file: {audio_file_path}")
+#         result = model.transcribe(audio_file_path)
+#         
+#         transcribed_text = result["text"].strip()
+#         print(f"Transcription completed: '{transcribed_text}'")
+#         
+#         return transcribed_text
+#         
+#     except Exception as e:
+#         print(f"Error transcribing audio: {e}")
+#         return None
+
+# # Function to solve CAPTCHA using audio transcription
+# def solve_captcha_audio(audio_file_path):
+#     """
+#     Solve CAPTCHA by transcribing audio and extracting numbers/letters
+#     
+#     Args:
+#         audio_file_path (str): Path to the CAPTCHA audio file
+#     
+#     Returns:
+#         str: Extracted CAPTCHA text
+#     """
+#     try:
+#         # Transcribe the audio
+#         transcription = transcribe_audio(audio_file_path, model_name="base")
+#         
+#         if transcription:
+#             # Clean up the transcription - extract only alphanumeric characters
+#             import re
+#             captcha_text = re.sub(r'[^a-zA-Z0-9]', '', transcription.upper())
+#             
+#             print(f"Extracted CAPTCHA text: {captcha_text}")
+#             return captcha_text
+#         else:
+#             print("Failed to transcribe audio")
+#             return None
+#             
+#     except Exception as e:
+#         print(f"Error solving CAPTCHA with audio: {e}")
+#         return None
+
 # Main script
 driver = create_chrome_driver(headless=False)  # Set to False for local testing
 if driver:
     try:
         driver.get("https://services.ecourts.gov.in/ecourtindia_v6/")
-        time.sleep(5)
+        time.sleep(1)
 
         # Enter CNR
-        wait = WebDriverWait(driver, 15)
+        wait = WebDriverWait(driver, 1)
         cnr_input = wait.until(EC.presence_of_element_located((By.ID, 'cino')))
         cnr_number = "KAUP050003552024"  # e.g., MHAU019999992015
         cnr_input.clear()
         cnr_input.send_keys(cnr_number)
         print(f"Entered CNR number: {cnr_number}")
 
-        # Save CAPTCHA image
+        # Save CAPTCHA image and audio
         saved_image_path = save_captcha_image(driver)
 
         if saved_image_path:
             print(f"CAPTCHA image successfully saved to: {saved_image_path}")
             print("Attempting to solve CAPTCHA...")
 
-            from transformers import VisionEncoderDecoderModel, TrOCRProcessor
-            import torch
-            from PIL import Image
+            ocr_text = None
+            audio_text = None
+            
+            # Try OCR first
+            try:
+                from transformers import VisionEncoderDecoderModel, TrOCRProcessor
+                import torch
+                from PIL import Image
 
-            model_name = 'anuashok/ocr-captcha-v3'
-            processor = TrOCRProcessor.from_pretrained(model_name)
-            model = VisionEncoderDecoderModel.from_pretrained(model_name)
+                model_name = 'anuashok/ocr-captcha-v3'
+                processor = TrOCRProcessor.from_pretrained(model_name)
+                model = VisionEncoderDecoderModel.from_pretrained(model_name)
 
-            image = Image.open(saved_image_path).convert("RGBA")
-            background = Image.new("RGBA", image.size, (255, 255, 255))
-            combined = Image.alpha_composite(background, image).convert("RGB")
+                image = Image.open(saved_image_path).convert("RGBA")
+                background = Image.new("RGBA", image.size, (255, 255, 255))
+                combined = Image.alpha_composite(background, image).convert("RGB")
 
-            pixel_values = processor(combined, return_tensors="pt").pixel_values
-            generated_ids = model.generate(pixel_values)
-            generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-            print("Predicted CAPTCHA text:", generated_text)
+                pixel_values = processor(combined, return_tensors="pt").pixel_values
+                generated_ids = model.generate(pixel_values)
+                ocr_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+                print("Predicted CAPTCHA text (OCR):", ocr_text)
+                
+            except Exception as e:
+                print(f"OCR failed: {e}")
+                ocr_text = None
+            
+            # Always try audio transcription as well
+            # print("\n" + "="*50)
+            # print("AUDIO TRANSCRIPTION ATTEMPT")
+            # print("="*50)
+            
+            # # Look for audio file in the same directory
+            # audio_directory = os.path.dirname(saved_image_path)
+            # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            # audio_filename = f"captcha_{timestamp}.wav"
+            # audio_filepath = os.path.join(audio_directory, audio_filename)
+            
+            # if os.path.exists(audio_filepath):
+            #     print(f"Found audio file: {audio_filepath}")
+            #     audio_text = solve_captcha_audio(audio_filepath)
+            #     if audio_text:
+            #         print(f"Predicted CAPTCHA text (Audio): {audio_text}")
+            #     else:
+            #         print("Audio transcription failed")
+            # else:
+            #     print(f"Audio file not found: {audio_filepath}")
+            #     print("Available files in directory:")
+            #     for file in os.listdir(audio_directory):
+            #         if file.endswith('.wav'):
+            #             print(f"  - {file}")
+            
+            # # Print comparison summary
+            # print("\n" + "="*50)
+            # print("CAPTCHA SOLVING RESULTS")
+            # print("="*50)
+            # print(f"OCR Result:     {ocr_text if ocr_text else 'FAILED'}")
+            # print(f"Audio Result:   {audio_text if audio_text else 'FAILED'}")
+            
+            # # Choose the best result (prefer OCR if both available)
+            # if ocr_text and len(ocr_text.strip()) > 0:
+            #     generated_text = ocr_text
+            #     print(f"Using OCR result: {generated_text}")
+            # elif audio_text and len(audio_text.strip()) > 0:
+            #     generated_text = audio_text
+            #     print(f"Using Audio result: {generated_text}")
+            # else:
+            #     print("Both methods failed. Cannot proceed.")
+            #     generated_text = "FAILED"  # Set a fallback value
+            
+            # print("="*50)
+            
+            # Simplified version - use OCR result only
+            if ocr_text and len(ocr_text.strip()) > 0:
+                generated_text = ocr_text
+                print(f"Using OCR result: {generated_text}")
+            else:
+                print("OCR failed. Cannot proceed.")
+                generated_text = "FAILED"  # Set a fallback value
 
             # Automatically enter the solved CAPTCHA and press search
             try:

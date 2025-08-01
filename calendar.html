@@ -91,9 +91,10 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: white;
+            background: linear-gradient(135deg, #e8f4fd 0%, #f8f9fa 100%);
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
         }
 
         .header h1 {
@@ -694,23 +695,38 @@
                     const event = document.createElement('div');
                     event.className = 'event hearing';
                     event.textContent = 'Smith Hearing';
+                    event.onclick = (e) => {
+                        e.stopPropagation();
+                        window.location.href = 'case_details.html?case=Smith vs. Johnson&type=Civil';
+                    };
                     dayElement.appendChild(event);
                 }
                 if (day.getDate() === 18) {
                     const event = document.createElement('div');
                     event.className = 'event client-meeting';
                     event.textContent = 'Davis Meeting';
+                    event.onclick = (e) => {
+                        e.stopPropagation();
+                        window.location.href = 'case_details.html?case=Davis Contract Dispute&type=Commercial';
+                    };
                     dayElement.appendChild(event);
                 }
                 if (day.getDate() === 22) {
                     const event = document.createElement('div');
                     event.className = 'event deadline';
                     event.textContent = 'Filing Deadline';
+                    event.onclick = (e) => {
+                        e.stopPropagation();
+                        window.location.href = 'case_details.html?case=Brown Estate&type=Probate';
+                    };
                     dayElement.appendChild(event);
                 }
 
                 dayElement.addEventListener('click', () => {
-                    alert(`Selected date: ${day.toDateString()}`);
+                    // Switch to day view when a day is clicked
+                    switchView('day');
+                    // Update day view to show the selected date
+                    updateDayView(day);
                 });
 
                 calendarBody.appendChild(dayElement);
@@ -766,6 +782,10 @@
                         event.className = 'week-event hearing';
                         event.textContent = 'Smith Hearing';
                         event.style.top = '5px';
+                        event.onclick = (e) => {
+                            e.stopPropagation();
+                            window.location.href = 'case_details.html?case=Smith vs. Johnson&type=Civil';
+                        };
                         daySlot.appendChild(event);
                     }
                     if (hour === 14 && day === 3) { // Thursday 2 PM
@@ -773,8 +793,20 @@
                         event.className = 'week-event client-meeting';
                         event.textContent = 'Davis Meeting';
                         event.style.top = '5px';
+                        event.onclick = (e) => {
+                            e.stopPropagation();
+                            window.location.href = 'case_details.html?case=Davis Contract Dispute&type=Commercial';
+                        };
                         daySlot.appendChild(event);
                     }
+                    
+                    // Make day slots clickable to go to day view
+                    daySlot.addEventListener('click', () => {
+                        const selectedDate = new Date(weekStart);
+                        selectedDate.setDate(weekStart.getDate() + day);
+                        switchView('day');
+                        updateDayView(selectedDate);
+                    });
                     
                     weekBody.appendChild(daySlot);
                 }
@@ -782,13 +814,16 @@
         }
 
         function generateDayView() {
+            updateDayView(new Date());
+        }
+
+        function updateDayView(selectedDate) {
             const dayHeader = document.getElementById('dayHeader');
             const dayTimeline = document.getElementById('dayTimeline');
             
-            const today = new Date();
             dayHeader.innerHTML = `
-                <div class="day-title">${today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
-                <div class="day-subtitle">${today.getFullYear()}</div>
+                <div class="day-title">${selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+                <div class="day-subtitle">${selectedDate.getFullYear()}</div>
             `;
             
             dayTimeline.innerHTML = '';
@@ -805,32 +840,45 @@
                 const hourContent = document.createElement('div');
                 hourContent.className = 'hour-content';
                 
-                // Add sample events
-                if (hour === 10) {
+                // Add sample events based on the selected date
+                const dayOfMonth = selectedDate.getDate();
+                const dayOfWeek = selectedDate.getDay();
+                
+                // Sample events for different dates
+                if (hour === 10 && (dayOfMonth === 15 || dayOfWeek === 1)) {
                     const event = document.createElement('div');
                     event.className = 'day-event hearing';
                     event.innerHTML = `
                         <h4>Smith vs. Johnson Hearing</h4>
                         <p>Court Room 3A • 10:00 AM - 11:00 AM</p>
                     `;
+                    event.onclick = () => {
+                        window.location.href = 'case_details.html?case=Smith vs. Johnson&type=Civil';
+                    };
                     hourContent.appendChild(event);
                 }
-                if (hour === 14) {
+                if (hour === 14 && (dayOfMonth === 18 || dayOfWeek === 3)) {
                     const event = document.createElement('div');
                     event.className = 'day-event client-meeting';
                     event.innerHTML = `
                         <h4>Davis Corporation Meeting</h4>
                         <p>Conference Room B • 2:00 PM - 3:00 PM</p>
                     `;
+                    event.onclick = () => {
+                        window.location.href = 'case_details.html?case=Davis Contract Dispute&type=Commercial';
+                    };
                     hourContent.appendChild(event);
                 }
-                if (hour === 16) {
+                if (hour === 16 && (dayOfMonth === 22 || dayOfWeek === 5)) {
                     const event = document.createElement('div');
                     event.className = 'day-event deadline';
                     event.innerHTML = `
                         <h4>Document Filing Deadline</h4>
                         <p>Brown Estate Case • 4:00 PM</p>
                     `;
+                    event.onclick = () => {
+                        window.location.href = 'case_details.html?case=Brown Estate&type=Probate';
+                    };
                     hourContent.appendChild(event);
                 }
                 

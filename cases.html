@@ -92,9 +92,10 @@
             align-items: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: white;
+            background: linear-gradient(135deg, #e8f4fd 0%, #f8f9fa 100%);
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
         }
 
         .header h1 {
@@ -200,6 +201,12 @@
             transition: background 0.3s;
         }
 
+        .table-row > div:nth-child(5) {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .table-row:hover {
             background: #f8f9fa;
         }
@@ -233,6 +240,10 @@
             font-size: 11px;
             font-weight: bold;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
         }
 
         .status-pending {
@@ -370,19 +381,23 @@
             <!-- Search and Filters -->
             <div class="search-filters">
                 <div class="search-row">
-                    <input type="text" class="search-input" placeholder="Search cases by name, client, or case number...">
-                    <select class="filter-select">
-                        <option>All Status</option>
-                        <option>Active</option>
-                        <option>Pending</option>
-                        <option>Completed</option>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search cases by name, client, or case number...">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
                     </select>
-                    <select class="filter-select">
-                        <option>All Types</option>
-                        <option>Civil</option>
-                        <option>Criminal</option>
-                        <option>Commercial</option>
-                        <option>Family</option>
+                    <select id="typeFilter" class="filter-select">
+                        <option value="">All Types</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Criminal">Criminal</option>
+                        <option value="Commercial">Commercial</option>
+                        <option value="Family">Family</option>
+                        <option value="Probate">Probate</option>
+                        <option value="Traffic">Traffic</option>
+                        <option value="Employment">Employment</option>
+                        <option value="Immigration">Immigration</option>
                     </select>
                 </div>
             </div>
@@ -586,19 +601,10 @@
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            // Add IDs to search and filter elements
-            const searchInput = document.querySelector('.search-input');
-            const statusFilter = document.querySelector('.filter-select:first-of-type');
-            const typeFilter = document.querySelector('.filter-select:last-of-type');
-            
-            if (searchInput) searchInput.id = 'searchInput';
-            if (statusFilter) statusFilter.id = 'statusFilter';
-            if (typeFilter) typeFilter.id = 'typeFilter';
-
             // Add event listeners
-            if (searchInput) searchInput.addEventListener('input', searchCases);
-            if (statusFilter) statusFilter.addEventListener('change', searchCases);
-            if (typeFilter) typeFilter.addEventListener('change', searchCases);
+            document.getElementById('searchInput').addEventListener('input', searchCases);
+            document.getElementById('statusFilter').addEventListener('change', searchCases);
+            document.getElementById('typeFilter').addEventListener('change', searchCases);
 
             // Initial display
             displayCases();
