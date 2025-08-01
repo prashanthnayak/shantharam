@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Case - LegalPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+        }
+
+        .nav-item.active {
+            background: #3498db;
+        }
+
+        .nav-item i {
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            transition: border-color 0.3s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed #ecf0f1;
+            border-radius: 6px;
+            padding: 30px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #3498db;
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            color: #bdc3c7;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-text {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>LegalPro</h2>
+                <p>Management System</p>
+            </div>
+            <nav class="nav-menu">
+                <a href="legal_dashboard.html" class="nav-item">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="cases.html" class="nav-item active">
+                    <i>📁</i>
+                    <span>Cases</span>
+                </a>
+                <a href="clients.html" class="nav-item">
+                    <i>👥</i>
+                    <span>Clients</span>
+                </a>
+                <a href="calendar.html" class="nav-item">
+                    <i>📅</i>
+                    <span>Calendar</span>
+                </a>
+                <a href="documents.html" class="nav-item">
+                    <i>📋</i>
+                    <span>Documents</span>
+                </a>
+                <a href="billing.html" class="nav-item">
+                    <i>💰</i>
+                    <span>Billing</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Add New Case</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="window.location.href='cases.html'">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveCase()">Save Case</button>
+                </div>
+            </div>
+
+            <!-- Case Form -->
+            <form id="caseForm" class="form-container">
+                <!-- Basic Case Information -->
+                <div class="form-section">
+                    <h2 class="section-title">Basic Case Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Case Title <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="caseTitle" required placeholder="e.g., Smith vs. Johnson">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Case Number</label>
+                            <input type="text" class="form-input" name="caseNumber" placeholder="Auto-generated">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Case Type <span class="required">*</span></label>
+                            <select class="form-select" name="caseType" required>
+                                <option value="">Select Case Type</option>
+                                <option value="civil">Civil</option>
+                                <option value="criminal">Criminal</option>
+                                <option value="family">Family</option>
+                                <option value="commercial">Commercial</option>
+                                <option value="probate">Probate</option>
+                                <option value="bankruptcy">Bankruptcy</option>
+                                <option value="immigration">Immigration</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Court <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="court" required placeholder="e.g., District Court">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Judge</label>
+                            <input type="text" class="form-input" name="judge" placeholder="e.g., Hon. Judge Williams">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Case Status <span class="required">*</span></label>
+                            <select class="form-select" name="caseStatus" required>
+                                <option value="">Select Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="active">Active</option>
+                                <option value="on-hold">On Hold</option>
+                                <option value="settled">Settled</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Information -->
+                <div class="form-section">
+                    <h2 class="section-title">Client Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Primary Client <span class="required">*</span></label>
+                            <select class="form-select" name="primaryClient" required>
+                                <option value="">Select Client</option>
+                                <option value="john-smith">John Smith</option>
+                                <option value="davis-corp">Davis Corporation</option>
+                                <option value="sarah-brown">Sarah Brown</option>
+                                <option value="robert-williams">Robert Williams</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Opposing Party</label>
+                            <input type="text" class="form-input" name="opposingParty" placeholder="e.g., Johnson Enterprises">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Opposing Attorney</label>
+                            <input type="text" class="form-input" name="opposingAttorney" placeholder="e.g., Attorney Johnson">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Opposing Attorney Contact</label>
+                            <input type="text" class="form-input" name="opposingAttorneyContact" placeholder="Phone or Email">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Details -->
+                <div class="form-section">
+                    <h2 class="section-title">Case Details</h2>
+                    <div class="form-group">
+                        <label class="form-label">Case Description</label>
+                        <textarea class="form-textarea" name="caseDescription" placeholder="Provide a detailed description of the case..."></textarea>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Filing Date</label>
+                            <input type="date" class="form-input" name="filingDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expected Resolution Date</label>
+                            <input type="date" class="form-input" name="expectedResolutionDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Priority Level</label>
+                            <select class="form-select" name="priorityLevel">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estimated Value</label>
+                            <input type="number" class="form-input" name="estimatedValue" placeholder="Amount in USD">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="form-section">
+                    <h2 class="section-title">Initial Documents</h2>
+                    <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                        <div class="file-upload-icon">📁</div>
+                        <div class="file-upload-text">Click to upload documents or drag and drop files here</div>
+                        <input type="file" id="fileInput" class="file-input" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='cases.html'">Cancel</button>
+                    <button type="button" class="btn btn-danger">Save as Draft</button>
+                    <button type="submit" class="btn btn-primary">Create Case</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Form submission
+        document.getElementById('caseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveCase();
+        });
+
+        function saveCase() {
+            // Get form data
+            const formData = new FormData(document.getElementById('caseForm'));
+            const caseData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                caseData[key] = value;
+            }
+
+            // Validate required fields
+            const requiredFields = ['caseTitle', 'caseType', 'court', 'caseStatus', 'primaryClient'];
+            const missingFields = requiredFields.filter(field => !caseData[field]);
+
+            if (missingFields.length > 0) {
+                alert('Please fill in all required fields: ' + missingFields.join(', '));
+                return;
+            }
+
+            // Simulate saving case
+            console.log('Saving case:', caseData);
+            alert('Case created successfully!');
+            
+            // Redirect to cases page
+            window.location.href = 'cases.html';
+        }
+
+        // File upload handling
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                const fileNames = Array.from(files).map(file => file.name).join(', ');
+                alert(`Files selected: ${fileNames}`);
+            }
+        });
+
+        // Auto-generate case number
+        document.querySelector('input[name="caseTitle"]').addEventListener('input', function(e) {
+            const caseTitle = e.target.value;
+            if (caseTitle) {
+                const caseNumber = 'CASE-' + Date.now().toString().slice(-6);
+                document.querySelector('input[name="caseNumber"]').value = caseNumber;
+            }
+        });
+    </script>
+</body>
+</html> 

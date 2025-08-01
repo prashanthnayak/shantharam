@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Client - LegalPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+        }
+
+        .nav-item.active {
+            background: #3498db;
+        }
+
+        .nav-item i {
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            transition: border-color 0.3s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>LegalPro</h2>
+                <p>Management System</p>
+            </div>
+            <nav class="nav-menu">
+                <a href="legal_dashboard.html" class="nav-item">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="cases.html" class="nav-item">
+                    <i>📁</i>
+                    <span>Cases</span>
+                </a>
+                <a href="clients.html" class="nav-item active">
+                    <i>👥</i>
+                    <span>Clients</span>
+                </a>
+                <a href="calendar.html" class="nav-item">
+                    <i>📅</i>
+                    <span>Calendar</span>
+                </a>
+                <a href="documents.html" class="nav-item">
+                    <i>📋</i>
+                    <span>Documents</span>
+                </a>
+                <a href="billing.html" class="nav-item">
+                    <i>💰</i>
+                    <span>Billing</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Edit Client</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="window.location.href='clients.html'">Cancel</button>
+                    <button class="btn btn-danger" onclick="deleteClient()">Delete Client</button>
+                    <button class="btn btn-primary" onclick="updateClient()">Update Client</button>
+                </div>
+            </div>
+
+            <!-- Client Form -->
+            <form id="clientForm" class="form-container">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h2 class="section-title">Basic Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Full Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="fullName" id="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Client Type <span class="required">*</span></label>
+                            <select class="form-select" name="clientType" id="clientType" required>
+                                <option value="">Select Client Type</option>
+                                <option value="Individual Client">Individual Client</option>
+                                <option value="Corporate Client">Corporate Client</option>
+                                <option value="Government Client">Government Client</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address <span class="required">*</span></label>
+                            <input type="email" class="form-input" name="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number <span class="required">*</span></label>
+                            <input type="tel" class="form-input" name="phone" id="phone" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <h2 class="section-title">Contact Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-input" name="address" id="address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-input" name="city" id="city">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">State</label>
+                            <input type="text" class="form-input" name="state" id="state">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ZIP Code</label>
+                            <input type="text" class="form-input" name="zipCode" id="zipCode">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Emergency Contact</label>
+                            <input type="text" class="form-input" name="emergencyContact" id="emergencyContact">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Preferred Contact Method</label>
+                            <select class="form-select" name="preferredContact" id="preferredContact">
+                                <option value="Email">Email</option>
+                                <option value="Phone">Phone</option>
+                                <option value="Text">Text</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div class="form-section">
+                    <h2 class="section-title">Additional Information</h2>
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea" name="notes" id="notes" placeholder="Add any additional notes about the client..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='clients.html'">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteClient()">Delete Client</button>
+                    <button type="submit" class="btn btn-primary">Update Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample client data (same as in client_details.html)
+        const sampleClients = {
+            'John Smith': {
+                name: 'John Smith',
+                email: 'john.smith@email.com',
+                phone: '+1 (555) 123-4567',
+                address: '123 Main St',
+                city: 'New York',
+                state: 'NY',
+                zipCode: '10001',
+                emergencyContact: 'Jane Smith - +1 (555) 987-6543',
+                type: 'Individual Client',
+                preferredContact: 'Email',
+                notes: 'Reliable client, prefers email communication'
+            },
+            'Davis Corporation': {
+                name: 'Davis Corporation',
+                email: 'legal@daviscorp.com',
+                phone: '+1 (555) 987-6543',
+                address: '456 Business Ave',
+                city: 'Los Angeles',
+                state: 'CA',
+                zipCode: '90210',
+                emergencyContact: 'Legal Department - +1 (555) 456-7890',
+                type: 'Corporate Client',
+                preferredContact: 'Phone',
+                notes: 'Large corporate client, requires detailed reporting'
+            },
+            'Sarah Brown': {
+                name: 'Sarah Brown',
+                email: 'sarah.brown@email.com',
+                phone: '+1 (555) 456-7890',
+                address: '789 Oak St',
+                city: 'Chicago',
+                state: 'IL',
+                zipCode: '60601',
+                emergencyContact: 'Mike Brown - +1 (555) 321-6547',
+                type: 'Individual Client',
+                preferredContact: 'Email',
+                notes: 'New client, needs regular updates'
+            },
+            'Robert Williams': {
+                name: 'Robert Williams',
+                email: 'robert.w@email.com',
+                phone: '+1 (555) 321-6547',
+                address: '321 Pine St',
+                city: 'Miami',
+                state: 'FL',
+                zipCode: '33101',
+                emergencyContact: 'Lisa Williams - +1 (555) 789-1234',
+                type: 'Individual Client',
+                preferredContact: 'Phone',
+                notes: 'Criminal case client, requires sensitive handling'
+            }
+        };
+
+        // Load client data based on URL parameters
+        function loadClientData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const clientName = urlParams.get('client');
+            
+            if (clientName && sampleClients[clientName]) {
+                const clientData = sampleClients[clientName];
+                
+                // Populate form fields
+                document.getElementById('fullName').value = clientData.name;
+                document.getElementById('clientType').value = clientData.type;
+                document.getElementById('email').value = clientData.email;
+                document.getElementById('phone').value = clientData.phone;
+                document.getElementById('address').value = clientData.address;
+                document.getElementById('city').value = clientData.city;
+                document.getElementById('state').value = clientData.state;
+                document.getElementById('zipCode').value = clientData.zipCode;
+                document.getElementById('emergencyContact').value = clientData.emergencyContact;
+                document.getElementById('preferredContact').value = clientData.preferredContact;
+                document.getElementById('notes').value = clientData.notes;
+            }
+        }
+
+        // Form submission
+        document.getElementById('clientForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            updateClient();
+        });
+
+        function updateClient() {
+            // Get form data
+            const formData = new FormData(document.getElementById('clientForm'));
+            const clientData = {};
+            
+            for (let [key, value] of formData.entries()) {
+                clientData[key] = value;
+            }
+
+            // Validate required fields
+            const requiredFields = ['fullName', 'clientType', 'email', 'phone'];
+            const missingFields = requiredFields.filter(field => !clientData[field]);
+
+            if (missingFields.length > 0) {
+                alert('Please fill in all required fields: ' + missingFields.join(', '));
+                return;
+            }
+
+            // Simulate updating client
+            console.log('Updating client:', clientData);
+            alert('Client updated successfully!');
+            
+            // Redirect to clients page
+            window.location.href = 'clients.html';
+        }
+
+        function deleteClient() {
+            const clientName = document.getElementById('fullName').value;
+            if (confirm(`Are you sure you want to delete the client "${clientName}"? This action cannot be undone.`)) {
+                alert('Client deleted successfully!');
+                window.location.href = 'clients.html';
+            }
+        }
+
+        // Initialize page
+        loadClientData();
+    </script>
+</body>
+</html> 

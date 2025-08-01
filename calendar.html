@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - LegalPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            transform: translateX(5px);
+        }
+
+
+
+        .nav-item.active {
+            background: #3498db;
+        }
+
+        .nav-item i {
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.2);
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        /* Calendar Controls */
+        .calendar-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 8px 12px;
+            border: 1px solid #ecf0f1;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .current-month {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            border: 1px solid #ecf0f1;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background: #fef5e7;
+            color: #2c3e50;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(243, 156, 18, 0.2);
+        }
+
+        .view-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        /* Calendar Grid */
+        .calendar-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #f8f9fa;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .calendar-header-cell {
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            border-right: 1px solid #ecf0f1;
+        }
+
+        .calendar-header-cell:last-child {
+            border-right: none;
+        }
+
+        .calendar-body {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-day {
+            min-height: 120px;
+            padding: 10px;
+            border-right: 1px solid #ecf0f1;
+            border-bottom: 1px solid #ecf0f1;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .calendar-day:hover {
+            background: #fef5e7;
+        }
+
+        .calendar-day.other-month {
+            background: #f8f9fa;
+            color: #bdc3c7;
+        }
+
+        .calendar-day.today {
+            background: #e8f4fd;
+            border: 2px solid #3498db;
+        }
+
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .day-number.today {
+            color: #3498db;
+        }
+
+        .event {
+            background: #3498db;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .event:hover {
+            background: #f39c12;
+        }
+
+        .event.hearing {
+            background: #e74c3c;
+        }
+
+        .event.client-meeting {
+            background: #f39c12;
+        }
+
+        .event.deadline {
+            background: #9b59b6;
+        }
+
+        /* Event Details Panel */
+        .event-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .event-panel h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .event-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            transition: background 0.3s;
+        }
+
+        .event-item:hover {
+            background: #f8f9fa;
+        }
+
+        .event-info h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .event-info p {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .event-time {
+            font-size: 12px;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        /* Week View Styles */
+        .week-view {
+            display: none;
+        }
+
+        .week-view.active {
+            display: block;
+        }
+
+        .week-header {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            background: #f8f9fa;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .week-header-cell {
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            border-right: 1px solid #ecf0f1;
+        }
+
+        .week-header-cell:last-child {
+            border-right: none;
+        }
+
+        .week-body {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+        }
+
+        .time-slot {
+            padding: 10px;
+            border-right: 1px solid #ecf0f1;
+            border-bottom: 1px solid #ecf0f1;
+            min-height: 60px;
+            position: relative;
+        }
+
+        .time-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .week-event {
+            background: #3498db;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            z-index: 1;
+        }
+
+        .week-event.hearing {
+            background: #e74c3c;
+        }
+
+        .week-event.client-meeting {
+            background: #f39c12;
+        }
+
+        .week-event.deadline {
+            background: #9b59b6;
+        }
+
+        /* Day View Styles */
+        .day-view {
+            display: none;
+        }
+
+        .day-view.active {
+            display: block;
+        }
+
+        .day-header {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .day-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .day-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .day-timeline {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .timeline-hour {
+            display: flex;
+            border-bottom: 1px solid #ecf0f1;
+            min-height: 80px;
+        }
+
+        .hour-label {
+            width: 80px;
+            padding: 15px;
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            border-right: 1px solid #ecf0f1;
+        }
+
+        .hour-content {
+            flex: 1;
+            padding: 15px;
+            position: relative;
+        }
+
+        .day-event {
+            background: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .day-event:hover {
+            background: #2980b9;
+        }
+
+        .day-event.hearing {
+            background: #e74c3c;
+        }
+
+        .day-event.client-meeting {
+            background: #f39c12;
+        }
+
+        .day-event.deadline {
+            background: #9b59b6;
+        }
+
+        .day-event h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .day-event p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>LegalPro</h2>
+                <p>Management System</p>
+            </div>
+            <nav class="nav-menu">
+                <a href="legal_dashboard.html" class="nav-item">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="cases.html" class="nav-item">
+                    <i>📁</i>
+                    <span>Cases</span>
+                </a>
+                <a href="clients.html" class="nav-item">
+                    <i>👥</i>
+                    <span>Clients</span>
+                </a>
+                <a href="calendar.html" class="nav-item active">
+                    <i>📅</i>
+                    <span>Calendar</span>
+                </a>
+                <a href="documents.html" class="nav-item">
+                    <i>📋</i>
+                    <span>Documents</span>
+                </a>
+                <a href="billing.html" class="nav-item">
+                    <i>💰</i>
+                    <span>Billing</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Calendar</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">Export</button>
+                    <button class="btn btn-primary">+ New Event</button>
+                </div>
+            </div>
+
+            <!-- Calendar Controls -->
+            <div class="calendar-controls">
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="previousMonth()">‹</button>
+                    <span class="current-month">January 2024</span>
+                    <button class="nav-btn" onclick="nextMonth()">›</button>
+                </div>
+                <div class="view-options">
+                    <button class="view-btn active">Month</button>
+                    <button class="view-btn">Week</button>
+                    <button class="view-btn">Day</button>
+                </div>
+            </div>
+
+            <!-- Month View -->
+            <div class="calendar-container" id="monthView">
+                <div class="calendar-header">
+                    <div class="calendar-header-cell">Sunday</div>
+                    <div class="calendar-header-cell">Monday</div>
+                    <div class="calendar-header-cell">Tuesday</div>
+                    <div class="calendar-header-cell">Wednesday</div>
+                    <div class="calendar-header-cell">Thursday</div>
+                    <div class="calendar-header-cell">Friday</div>
+                    <div class="calendar-header-cell">Saturday</div>
+                </div>
+                <div class="calendar-body" id="calendarBody">
+                    <!-- Calendar days will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Week View -->
+            <div class="week-view" id="weekView">
+                <div class="week-header" id="weekHeader">
+                    <!-- Week header will be populated by JavaScript -->
+                </div>
+                <div class="week-body" id="weekBody">
+                    <!-- Week timeline will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Day View -->
+            <div class="day-view" id="dayView">
+                <div class="day-header" id="dayHeader">
+                    <!-- Day header will be populated by JavaScript -->
+                </div>
+                <div class="day-timeline" id="dayTimeline">
+                    <!-- Day timeline will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Event Details Panel -->
+            <div class="event-panel">
+                <h3>Today's Events</h3>
+                <div class="event-list">
+                    <div class="event-item">
+                        <div class="event-info">
+                            <h4>Smith vs. Johnson - Hearing</h4>
+                            <p>Court Room 3A, Judge Williams</p>
+                        </div>
+                        <div class="event-time">10:00 AM</div>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-info">
+                            <h4>Client Meeting - Davis Corp</h4>
+                            <p>Conference Room B</p>
+                        </div>
+                        <div class="event-time">2:00 PM</div>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-info">
+                            <h4>Document Filing Deadline</h4>
+                            <p>Brown Estate Case</p>
+                        </div>
+                        <div class="event-time">5:00 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calendar functionality
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let currentView = 'month';
+
+        function generateCalendar() {
+            if (currentView === 'month') {
+                generateMonthView();
+            } else if (currentView === 'week') {
+                generateWeekView();
+            } else if (currentView === 'day') {
+                generateDayView();
+            }
+        }
+
+        function generateMonthView() {
+            const calendarBody = document.getElementById('calendarBody');
+            calendarBody.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+            for (let i = 0; i < 42; i++) {
+                const day = new Date(startDate);
+                day.setDate(startDate.getDate() + i);
+
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                if (day.getMonth() !== currentMonth) {
+                    dayElement.classList.add('other-month');
+                }
+                
+                if (day.toDateString() === new Date().toDateString()) {
+                    dayElement.classList.add('today');
+                }
+
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                if (day.toDateString() === new Date().toDateString()) {
+                    dayNumber.classList.add('today');
+                }
+                dayNumber.textContent = day.getDate();
+                dayElement.appendChild(dayNumber);
+
+                // Add sample events
+                if (day.getDate() === 15) {
+                    const event = document.createElement('div');
+                    event.className = 'event hearing';
+                    event.textContent = 'Smith Hearing';
+                    dayElement.appendChild(event);
+                }
+                if (day.getDate() === 18) {
+                    const event = document.createElement('div');
+                    event.className = 'event client-meeting';
+                    event.textContent = 'Davis Meeting';
+                    dayElement.appendChild(event);
+                }
+                if (day.getDate() === 22) {
+                    const event = document.createElement('div');
+                    event.className = 'event deadline';
+                    event.textContent = 'Filing Deadline';
+                    dayElement.appendChild(event);
+                }
+
+                dayElement.addEventListener('click', () => {
+                    alert(`Selected date: ${day.toDateString()}`);
+                });
+
+                calendarBody.appendChild(dayElement);
+            }
+
+            updateMonthDisplay();
+        }
+
+        function generateWeekView() {
+            const weekHeader = document.getElementById('weekHeader');
+            const weekBody = document.getElementById('weekBody');
+            
+            weekHeader.innerHTML = '<div class="week-header-cell">Time</div>';
+            weekBody.innerHTML = '';
+
+            // Get current week's start (Sunday)
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - dayOfWeek);
+
+            // Generate week header
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(weekStart);
+                date.setDate(weekStart.getDate() + i);
+                
+                const headerCell = document.createElement('div');
+                headerCell.className = 'week-header-cell';
+                headerCell.innerHTML = `
+                    <div>${date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+                    <div style="font-size: 12px; color: #7f8c8d;">${date.getDate()}</div>
+                `;
+                weekHeader.appendChild(headerCell);
+            }
+
+            // Generate time slots (8 AM to 6 PM)
+            for (let hour = 8; hour <= 18; hour++) {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.style.gridColumn = '1';
+                timeSlot.innerHTML = `<div class="time-label">${hour}:00</div>`;
+                weekBody.appendChild(timeSlot);
+
+                // Add time slots for each day
+                for (let day = 0; day < 7; day++) {
+                    const daySlot = document.createElement('div');
+                    daySlot.className = 'time-slot';
+                    daySlot.style.gridColumn = day + 2;
+                    
+                    // Add sample events
+                    if (hour === 10 && day === 0) { // Monday 10 AM
+                        const event = document.createElement('div');
+                        event.className = 'week-event hearing';
+                        event.textContent = 'Smith Hearing';
+                        event.style.top = '5px';
+                        daySlot.appendChild(event);
+                    }
+                    if (hour === 14 && day === 3) { // Thursday 2 PM
+                        const event = document.createElement('div');
+                        event.className = 'week-event client-meeting';
+                        event.textContent = 'Davis Meeting';
+                        event.style.top = '5px';
+                        daySlot.appendChild(event);
+                    }
+                    
+                    weekBody.appendChild(daySlot);
+                }
+            }
+        }
+
+        function generateDayView() {
+            const dayHeader = document.getElementById('dayHeader');
+            const dayTimeline = document.getElementById('dayTimeline');
+            
+            const today = new Date();
+            dayHeader.innerHTML = `
+                <div class="day-title">${today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</div>
+                <div class="day-subtitle">${today.getFullYear()}</div>
+            `;
+            
+            dayTimeline.innerHTML = '';
+
+            // Generate timeline (8 AM to 6 PM)
+            for (let hour = 8; hour <= 18; hour++) {
+                const timelineHour = document.createElement('div');
+                timelineHour.className = 'timeline-hour';
+                
+                const hourLabel = document.createElement('div');
+                hourLabel.className = 'hour-label';
+                hourLabel.textContent = `${hour}:00`;
+                
+                const hourContent = document.createElement('div');
+                hourContent.className = 'hour-content';
+                
+                // Add sample events
+                if (hour === 10) {
+                    const event = document.createElement('div');
+                    event.className = 'day-event hearing';
+                    event.innerHTML = `
+                        <h4>Smith vs. Johnson Hearing</h4>
+                        <p>Court Room 3A • 10:00 AM - 11:00 AM</p>
+                    `;
+                    hourContent.appendChild(event);
+                }
+                if (hour === 14) {
+                    const event = document.createElement('div');
+                    event.className = 'day-event client-meeting';
+                    event.innerHTML = `
+                        <h4>Davis Corporation Meeting</h4>
+                        <p>Conference Room B • 2:00 PM - 3:00 PM</p>
+                    `;
+                    hourContent.appendChild(event);
+                }
+                if (hour === 16) {
+                    const event = document.createElement('div');
+                    event.className = 'day-event deadline';
+                    event.innerHTML = `
+                        <h4>Document Filing Deadline</h4>
+                        <p>Brown Estate Case • 4:00 PM</p>
+                    `;
+                    hourContent.appendChild(event);
+                }
+                
+                timelineHour.appendChild(hourLabel);
+                timelineHour.appendChild(hourContent);
+                dayTimeline.appendChild(timelineHour);
+            }
+        }
+
+        function updateMonthDisplay() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            document.querySelector('.current-month').textContent = 
+                `${monthNames[currentMonth]} ${currentYear}`;
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        function switchView(view) {
+            currentView = view;
+            
+            // Hide all views
+            document.getElementById('monthView').style.display = 'none';
+            document.getElementById('weekView').style.display = 'none';
+            document.getElementById('dayView').style.display = 'none';
+            
+            // Show selected view
+            if (view === 'month') {
+                document.getElementById('monthView').style.display = 'block';
+            } else if (view === 'week') {
+                document.getElementById('weekView').style.display = 'block';
+            } else if (view === 'day') {
+                document.getElementById('dayView').style.display = 'block';
+            }
+            
+            generateCalendar();
+        }
+
+        // Initialize calendar
+        generateCalendar();
+
+        // View button functionality
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Get view type from button text
+                const viewText = this.textContent.toLowerCase();
+                if (viewText.includes('month')) {
+                    switchView('month');
+                } else if (viewText.includes('week')) {
+                    switchView('week');
+                } else if (viewText.includes('day')) {
+                    switchView('day');
+                }
+            });
+        });
+
+        // New event button
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            alert('Opening new event form...');
+        });
+    </script>
+</body>
+</html> 

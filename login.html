@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .captcha-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .captcha-image {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            letter-spacing: 3px;
+        }
+
+        .captcha-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .captcha-controls button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .captcha-controls button:hover {
+            background: #5a6fd8;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .forgot-password a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-alert {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Please sign in to your account</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            Login successful! Redirecting...
+        </div>
+
+        <div class="error-alert" id="errorAlert">
+            Invalid credentials. Please try again.
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <div class="error-message" id="usernameError">Please enter a valid username</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <div class="error-message" id="passwordError">Please enter your password</div>
+            </div>
+
+            <div class="captcha-section">
+                <label for="captcha">CAPTCHA</label>
+                <div class="captcha-image" id="captchaImage">ABC123</div>
+                <input type="text" id="captcha" name="captcha" placeholder="Enter CAPTCHA" required style="margin-top: 10px;">
+                <div class="error-message" id="captchaError">Please enter the correct CAPTCHA</div>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+        </form>
+
+        <div class="forgot-password">
+            <a href="#" onclick="forgotPassword()">Forgot your password?</a>
+        </div>
+    </div>
+
+    <script>
+        // Generate random CAPTCHA
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return captcha;
+        }
+
+        let currentCaptcha = generateCaptcha();
+
+        // Update CAPTCHA display
+        function updateCaptcha() {
+            document.getElementById('captchaImage').textContent = currentCaptcha;
+        }
+
+        // Refresh CAPTCHA
+        function refreshCaptcha() {
+            currentCaptcha = generateCaptcha();
+            updateCaptcha();
+            document.getElementById('captcha').value = '';
+            clearErrors();
+        }
+
+        // Play audio (placeholder)
+        function playAudio() {
+            alert('Audio CAPTCHA would play here');
+        }
+
+        // Forgot password (placeholder)
+        function forgotPassword() {
+            alert('Forgot password functionality would be implemented here');
+        }
+
+        // Clear all error messages
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+            document.getElementById('errorAlert').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Show error message
+        function showError(fieldId, message) {
+            document.getElementById(fieldId + 'Error').textContent = message;
+            document.getElementById(fieldId + 'Error').style.display = 'block';
+            document.getElementById(fieldId).classList.add('error');
+        }
+
+        // Form validation
+        function validateForm() {
+            clearErrors();
+            let isValid = true;
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const captcha = document.getElementById('captcha').value.trim();
+
+            if (!username) {
+                showError('username', 'Please enter your username');
+                isValid = false;
+            }
+
+            if (!password) {
+                showError('password', 'Please enter your password');
+                isValid = false;
+            }
+
+            if (!captcha) {
+                showError('captcha', 'Please enter the CAPTCHA');
+                isValid = false;
+            } else if (captcha.toUpperCase() !== currentCaptcha) {
+                showError('captcha', 'CAPTCHA is incorrect');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Signing In...';
+
+                // Simulate login process
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Reset form
+                    document.getElementById('loginForm').reset();
+                    refreshCaptcha();
+                    
+                    // Re-enable button after 3 seconds
+                    setTimeout(() => {
+                        loginBtn.disabled = false;
+                        loginBtn.textContent = 'Sign In';
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 3000);
+                }, 1500);
+            } else {
+                document.getElementById('errorAlert').style.display = 'block';
+            }
+        });
+
+        // Initialize CAPTCHA
+        updateCaptcha();
+
+        // Auto-refresh CAPTCHA every 2 minutes
+        setInterval(refreshCaptcha, 120000);
+    </script>
+</body>
+</html> 

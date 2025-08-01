@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents - LegalPro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            transform: translateX(5px);
+        }
+
+
+
+        .nav-item.active {
+            background: #3498db;
+        }
+
+        .nav-item i {
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.2);
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        /* Search and Filters */
+        .search-filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+        }
+
+        /* Document Categories */
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: 1px solid #ecf0f1;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .category-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        /* Documents Grid */
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .document-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .document-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(243, 156, 18, 0.15);
+        }
+
+        .document-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .icon-pdf {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .icon-doc {
+            background: #3498db;
+            color: white;
+        }
+
+        .icon-img {
+            background: #f39c12;
+            color: white;
+        }
+
+        .document-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .document-info p {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .document-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .action-btn-view {
+            background: #3498db;
+            color: white;
+        }
+
+        .action-btn-download {
+            background: #27ae60;
+            color: white;
+        }
+
+        .action-btn-share {
+            background: #f39c12;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(243, 156, 18, 0.2);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            background: white;
+            border: 2px dashed #ecf0f1;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: #3498db;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #bdc3c7;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .upload-btn {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>LegalPro</h2>
+                <p>Management System</p>
+            </div>
+            <nav class="nav-menu">
+                <a href="legal_dashboard.html" class="nav-item">
+                    <i>📊</i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="cases.html" class="nav-item">
+                    <i>📁</i>
+                    <span>Cases</span>
+                </a>
+                <a href="clients.html" class="nav-item">
+                    <i>👥</i>
+                    <span>Clients</span>
+                </a>
+                <a href="calendar.html" class="nav-item">
+                    <i>📅</i>
+                    <span>Calendar</span>
+                </a>
+                <a href="documents.html" class="nav-item active">
+                    <i>📋</i>
+                    <span>Documents</span>
+                </a>
+                <a href="billing.html" class="nav-item">
+                    <i>💰</i>
+                    <span>Billing</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i>⚙️</i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1>Documents</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">Export</button>
+                    <button class="btn btn-primary">+ Upload Document</button>
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="search-filters">
+                <div class="search-row">
+                    <input type="text" class="search-input" placeholder="Search documents by name, case, or client...">
+                    <select class="filter-select">
+                        <option>All Types</option>
+                        <option>PDF</option>
+                        <option>Word</option>
+                        <option>Images</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Cases</option>
+                        <option>Smith vs. Johnson</option>
+                        <option>Davis Contract</option>
+                        <option>Brown Estate</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="categories">
+                <button class="category-btn active">All Documents</button>
+                <button class="category-btn">Case Files</button>
+                <button class="category-btn">Contracts</button>
+                <button class="category-btn">Court Orders</button>
+                <button class="category-btn">Evidence</button>
+                <button class="category-btn">Correspondence</button>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Drag and drop files here or click to browse</div>
+                <button class="upload-btn">Choose Files</button>
+            </div>
+
+            <!-- Documents Grid -->
+            <div class="documents-grid">
+                <!-- Document Card 1 -->
+                <div class="document-card">
+                    <div class="document-icon icon-pdf">📄</div>
+                    <div class="document-info">
+                        <h3>Smith vs. Johnson - Complaint</h3>
+                        <p>Civil case complaint filed on January 15, 2024</p>
+                    </div>
+                    <div class="document-meta">
+                        <span>PDF • 2.3 MB</span>
+                        <span>Jan 15, 2024</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="action-btn action-btn-view">View</button>
+                        <button class="action-btn action-btn-download">Download</button>
+                        <button class="action-btn action-btn-share">Share</button>
+                    </div>
+                </div>
+
+                <!-- Document Card 2 -->
+                <div class="document-card">
+                    <div class="document-icon icon-doc">📝</div>
+                    <div class="document-info">
+                        <h3>Davis Contract Agreement</h3>
+                        <p>Commercial contract for Davis Corporation</p>
+                    </div>
+                    <div class="document-meta">
+                        <span>DOCX • 1.8 MB</span>
+                        <span>Jan 20, 2024</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="action-btn action-btn-view">View</button>
+                        <button class="action-btn action-btn-download">Download</button>
+                        <button class="action-btn action-btn-share">Share</button>
+                    </div>
+                </div>
+
+                <!-- Document Card 3 -->
+                <div class="document-card">
+                    <div class="document-icon icon-img">🖼️</div>
+                    <div class="document-info">
+                        <h3>Evidence Photos - Williams Case</h3>
+                        <p>Photographic evidence for criminal case</p>
+                    </div>
+                    <div class="document-meta">
+                        <span>JPG • 5.2 MB</span>
+                        <span>Jan 18, 2024</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="action-btn action-btn-view">View</button>
+                        <button class="action-btn action-btn-download">Download</button>
+                        <button class="action-btn action-btn-share">Share</button>
+                    </div>
+                </div>
+
+                <!-- Document Card 4 -->
+                <div class="document-card">
+                    <div class="document-icon icon-pdf">📄</div>
+                    <div class="document-info">
+                        <h3>Brown Estate - Final Settlement</h3>
+                        <p>Probate case final settlement document</p>
+                    </div>
+                    <div class="document-meta">
+                        <span>PDF • 3.1 MB</span>
+                        <span>Jan 12, 2024</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="action-btn action-btn-view">View</button>
+                        <button class="action-btn action-btn-download">Download</button>
+                        <button class="action-btn action-btn-share">Share</button>
+                    </div>
+                </div>
+
+                <!-- Document Card 5 -->
+                <div class="document-card">
+                    <div class="document-icon icon-doc">📝</div>
+                    <div class="document-info">
+                        <h3>Court Order - Miller Divorce</h3>
+                        <p>Family court order for divorce proceedings</p>
+                    </div>
+                    <div class="document-meta">
+                        <span>DOCX • 1.5 MB</span>
+                        <span>Jan 25, 2024</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="action-btn action-btn-view">View</button>
+                        <button class="action-btn action-btn-download">Download</button>
+                        <button class="action-btn action-btn-share">Share</button>
+                    </div>
+                </div>
+
+                <!-- Document Card 6 -->
+                <div class="document-card">
+                    <div class="document-icon icon-pdf">📄</div>
+                    <div class="document-info">
+                        <h3>Legal Correspondence - Johnson</h3>
+                        <p>Official correspondence with client Johnson</p>
+                    </div>
+                    <div class="document-meta">
+                        <span>PDF • 0.8 MB</span>
+                        <span>Jan 22, 2024</span>
+                    </div>
+                    <div class="document-actions">
+                        <button class="action-btn action-btn-view">View</button>
+                        <button class="action-btn action-btn-download">Download</button>
+                        <button class="action-btn action-btn-share">Share</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Category button functionality
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Document action buttons
+        document.querySelectorAll('.action-btn-view').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const docName = this.closest('.document-card').querySelector('h3').textContent;
+                alert(`Viewing document: ${docName}`);
+            });
+        });
+
+        document.querySelectorAll('.action-btn-download').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const docName = this.closest('.document-card').querySelector('h3').textContent;
+                alert(`Downloading document: ${docName}`);
+            });
+        });
+
+        document.querySelectorAll('.action-btn-share').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const docName = this.closest('.document-card').querySelector('h3').textContent;
+                alert(`Sharing document: ${docName}`);
+            });
+        });
+
+        // Upload functionality
+        document.querySelector('.upload-btn').addEventListener('click', function() {
+            alert('Opening file browser...');
+        });
+
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            alert('Opening document upload form...');
+        });
+    </script>
+</body>
+</html> 
